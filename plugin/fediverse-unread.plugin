@@ -1,0 +1,7 @@
+[Plugin]
+Module=fediverse-unread
+Name=Fediverse Mentions
+Description=Keeps the count of unread mentions on the Fediverse icon while the app is closed
+Authors=Singularity Team
+Website=https://sinty.dev
+X-Singularity-App=dev.sinty.fediverse

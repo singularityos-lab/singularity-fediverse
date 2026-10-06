@@ -1,0 +1,5 @@
+{
+  "accounts": [{"id": "7", "username": "carol", "acct": "carol@other.example", "display_name": "Carol", "url": "https://other.example/@carol"}],
+  "statuses": [{"id": "600", "content": "<p>found</p>", "visibility": "public", "account": {"id": "7", "username": "carol", "acct": "carol@other.example", "url": "https://other.example/@carol"}}],
+  "hashtags": [{"name": "Vala", "url": "https://example.social/tags/vala"}, "legacy"]
+}

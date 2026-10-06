@@ -1,0 +1,1 @@
+{"stream": ["user"], "event": "update", "payload": "{\"id\":\"777\",\"content\":\"<p>live</p>\",\"visibility\":\"public\",\"account\":{\"id\":\"1\",\"username\":\"a\",\"acct\":\"a\",\"url\":\"https://s.example/@a\"}}"}

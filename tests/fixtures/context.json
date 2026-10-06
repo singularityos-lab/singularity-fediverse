@@ -1,0 +1,9 @@
+{
+  "ancestors": [
+    {"id": "10", "content": "<p>root</p>", "visibility": "public", "account": {"id": "1", "username": "a", "acct": "a", "url": "https://s.example/@a"}}
+  ],
+  "descendants": [
+    {"id": "12", "in_reply_to_id": "11", "content": "<p>child one</p>", "visibility": "public", "account": {"id": "2", "username": "b", "acct": "b", "url": "https://s.example/@b"}},
+    {"id": "13", "in_reply_to_id": "12", "content": "<p>child two</p>", "visibility": "public", "account": {"id": "3", "username": "c", "acct": "c", "url": "https://s.example/@c"}}
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "uri": "akkoma.example",
+  "title": "Akkoma Example",
+  "version": "2.7.2 (compatible; Akkoma 3.10.0)",
+  "max_toot_chars": 20000,
+  "urls": {"streaming_api": "wss://akkoma.example"}
+}

@@ -1,0 +1,26 @@
+{
+  "id": "109302",
+  "username": "ada",
+  "acct": "ada@example.social",
+  "display_name": "Ada :blobcat: Lovelace",
+  "locked": true,
+  "bot": false,
+  "created_at": "2022-11-08T00:00:00.000Z",
+  "note": "<p>Engines &amp; notes. Posts about <a href=\"https://example.social/tags/math\" class=\"mention hashtag\" rel=\"tag\">#<span>math</span></a></p>",
+  "url": "https://example.social/@ada",
+  "avatar": "https://files.example.social/avatars/ada.gif",
+  "avatar_static": "https://files.example.social/avatars/ada.png",
+  "header": "https://files.example.social/headers/ada.jpg",
+  "header_static": "https://files.example.social/headers/ada.jpg",
+  "followers_count": 12450,
+  "following_count": 310,
+  "statuses_count": 999,
+  "last_status_at": "2026-09-20",
+  "emojis": [
+    {"shortcode": "blobcat", "url": "https://files.example.social/emoji/blobcat.gif", "static_url": "https://files.example.social/emoji/blobcat.png", "visible_in_picker": true}
+  ],
+  "fields": [
+    {"name": "Website", "value": "<a href=\"https://ada.example\" rel=\"me nofollow noopener noreferrer\" target=\"_blank\"><span class=\"invisible\">https://</span><span class=\"\">ada.example</span><span class=\"invisible\"></span></a>", "verified_at": "2024-01-02T10:00:00.000+00:00"},
+    {"name": "Pronouns", "value": "she/her", "verified_at": null}
+  ]
+}

@@ -1,0 +1,8 @@
+[Widget]
+Id=fediverse.mentions
+ProviderId=dev.sinty.fediverse
+Name=Latest Mentions
+IconName=mail-unread-symbolic
+Sizes=2x2;2x4;4x2;4x4
+Module=libsingularity-fediverse-widget.so
+ModuleSymbol=singularity_fediverse_widget_new

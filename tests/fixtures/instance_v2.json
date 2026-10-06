@@ -1,0 +1,10 @@
+{
+  "domain": "example.social",
+  "title": "Example Social",
+  "version": "4.3.0",
+  "configuration": {
+    "urls": {"streaming": "wss://streaming.example.social"},
+    "statuses": {"max_characters": 5000, "max_media_attachments": 6, "characters_reserved_per_url": 23},
+    "polls": {"max_options": 8}
+  }
+}

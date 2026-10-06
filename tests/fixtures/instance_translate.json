@@ -1,0 +1,10 @@
+{
+  "domain": "a.example",
+  "title": "A Example",
+  "version": "4.3.0",
+  "configuration": {
+    "urls": {"streaming": "wss://a.example"},
+    "statuses": {"max_characters": 500},
+    "translation": {"enabled": true}
+  }
+}

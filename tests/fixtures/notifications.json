@@ -1,0 +1,13 @@
+[
+  {"id": "900", "type": "favourite", "created_at": "2026-09-25T11:00:00.000Z",
+   "account": {"id": "7", "username": "carol", "acct": "carol@other.example", "display_name": "Carol", "url": "https://other.example/@carol", "avatar": "https://other.example/a.png", "emojis": []},
+   "status": {"id": "500", "created_at": "2026-09-20T11:00:00.000Z", "visibility": "public", "content": "<p>my post</p>", "account": {"id": "1", "username": "me", "acct": "me", "display_name": "Me", "url": "https://example.social/@me"}, "media_attachments": [], "mentions": [], "emojis": []}},
+  {"id": "899", "type": "follow", "created_at": "2026-09-25T10:00:00.000Z",
+   "account": {"id": "8", "username": "frank", "acct": "frank@x.example", "display_name": "Frank", "url": "https://x.example/@frank", "avatar": "", "emojis": []}},
+  {"id": "898", "type": "mention", "created_at": "2026-09-25T09:00:00.000Z",
+   "account": {"id": "9", "username": "gil", "acct": "gil", "display_name": "", "url": "https://example.social/@gil", "avatar": "", "emojis": []},
+   "status": {"id": "501", "created_at": "2026-09-25T09:00:00.000Z", "visibility": "direct", "content": "<p><span class=\"h-card\"><a href=\"https://example.social/@me\" class=\"u-url mention\">@<span>me</span></a></span> hi</p>", "account": {"id": "9", "username": "gil", "acct": "gil", "display_name": "", "url": "https://example.social/@gil"}, "media_attachments": [], "mentions": [{"id": "1", "username": "me", "acct": "me", "url": "https://example.social/@me"}], "emojis": []}},
+  {"id": "897", "type": "admin.sign_up", "created_at": "2026-09-25T08:00:00.000Z",
+   "account": {"id": "10", "username": "hal", "acct": "hal", "display_name": "Hal", "url": "https://example.social/@hal"}},
+  {"id": "896", "type": "follow", "account": null}
+]

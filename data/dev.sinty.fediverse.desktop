@@ -1,0 +1,16 @@
+[Desktop Entry]
+Name=Fediverse
+Comment=Follow people on Mastodon and the social web
+Exec=singularity-fediverse %U
+Icon=dev.sinty.fediverse
+Terminal=false
+Type=Application
+Categories=Network;Chat;InstantMessaging;
+MimeType=x-scheme-handler/sinty-fediverse;
+Keywords=mastodon;fediverse;gotosocial;akkoma;pleroma;social;toot;post;timeline;activitypub;
+StartupWMClass=dev.sinty.fediverse
+Actions=new-post;
+
+[Desktop Action new-post]
+Name=New Post
+Exec=singularity-fediverse --new-post

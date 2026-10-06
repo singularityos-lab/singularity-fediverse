@@ -1,0 +1,9 @@
+[
+  {"id": "3221", "scheduled_at": "2026-10-02T09:30:00.000Z",
+   "params": {"text": "Launch day!", "visibility": "unlisted", "spoiler_text": null, "sensitive": null, "in_reply_to_id": null, "language": "en", "media_ids": ["44", 45], "poll": null, "idempotency": null, "with_rate_limit": false, "application_id": 3, "scheduled_at": null},
+   "media_attachments": [{"id": "44", "type": "image", "url": "https://a.example/m/44.png", "preview_url": "https://a.example/m/44s.png", "description": "Poster"}]},
+  {"id": "3220", "scheduled_at": "2026-10-01T08:00:00.000Z",
+   "params": {"text": "Morning", "visibility": "private", "spoiler_text": "cw", "sensitive": true, "in_reply_to_id": "77"},
+   "media_attachments": []},
+  {"id": "bad"}
+]

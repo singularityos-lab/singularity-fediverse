@@ -1,0 +1,14 @@
+src/app.vala
+src/window.vala
+src/widgets.vala
+src/timeline.vala
+src/compose.vala
+src/client.vala
+src/accounts.vala
+src/model.vala
+src/requests.vala
+src/drafts.vala
+src/filters_view.vala
+src/unread.vala
+plugin/unread_plugin.vala
+widget/mentions_widget.vala

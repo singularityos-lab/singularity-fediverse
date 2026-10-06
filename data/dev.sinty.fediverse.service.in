@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=dev.sinty.fediverse
+Exec=@bindir@/singularity-fediverse --gapplication-service

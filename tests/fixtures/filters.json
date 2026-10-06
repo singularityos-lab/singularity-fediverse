@@ -1,0 +1,9 @@
+[
+  {"id": "11", "title": "Spoilers", "context": ["home", "public", "thread"], "expires_at": null, "filter_action": "warn",
+   "keywords": [{"id": "101", "keyword": "finale", "whole_word": true}, {"id": "102", "keyword": "ending", "whole_word": false}],
+   "statuses": []},
+  {"id": "12", "title": "Crypto", "context": ["home", "notifications"], "expires_at": "2030-01-01T00:00:00.000Z", "filter_action": "hide",
+   "keywords": [{"id": "103", "keyword": "nft", "whole_word": true}], "statuses": [{"id": "1", "status_id": "5"}]},
+  {"id": "13", "phrase": "legacy words", "context": ["public"], "whole_word": false, "irreversible": true, "expires_at": null},
+  {"title": "no id"}
+]
