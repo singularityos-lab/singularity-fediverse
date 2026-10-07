@@ -997,6 +997,48 @@ namespace Singularity.Apps.Fediverse {
     }
 
     public class ProfileHeader : Box {
+        private static string contacts_dir () {
+            return Path.build_filename (Environment.get_user_data_dir (), "singularity", "contacts");
+        }
+
+        private static bool in_contacts (Account a) {
+            string handle = a.acct.contains ("@") ? a.acct : a.url;
+            try {
+                var dir = Dir.open (contacts_dir ());
+                string? name;
+                while ((name = dir.read_name ()) != null) {
+                    if (!name.has_suffix (".vcf")) continue;
+                    string text;
+                    FileUtils.get_contents (Path.build_filename (contacts_dir (), name), out text);
+                    if (text.contains (handle) || (a.url != "" && text.contains (a.url))) return true;
+                }
+            } catch (Error e) {
+            }
+            return false;
+        }
+
+        private static bool add_to_contacts (Account a) {
+            string name = a.display_name != "" ? a.display_name : a.username;
+            string esc = name.replace ("\\", "\\\\").replace (",", "\\,").replace (";", "\\;");
+            var sb = new StringBuilder ("BEGIN:VCARD\r\nVERSION:3.0\r\n");
+            string uid = Uuid.string_random ();
+            sb.append ("UID:%s\r\n".printf (uid));
+            sb.append ("FN:%s\r\n".printf (esc));
+            sb.append ("N:;%s;;;\r\n".printf (esc));
+            sb.append ("NICKNAME:%s\r\n".printf (a.acct));
+            if (a.url != "") sb.append ("URL;TYPE=fediverse:%s\r\n".printf (a.url));
+            if (a.avatar != "") sb.append ("PHOTO;VALUE=uri:%s\r\n".printf (a.avatar));
+            sb.append ("END:VCARD\r\n");
+            try {
+                DirUtils.create_with_parents (contacts_dir (), 0700);
+                FileUtils.set_contents (Path.build_filename (contacts_dir (), uid + ".vcf"), sb.str);
+                return true;
+            } catch (Error e) {
+                warning ("Fediverse: could not add the contact: %s", e.message);
+                return false;
+            }
+        }
+
         private Account account;
         private Navigator nav;
         private Button follow;
@@ -1031,6 +1073,17 @@ namespace Singularity.Apps.Fediverse {
             follow.visible = false;
             follow.clicked.connect (toggle_follow);
             top.append (follow);
+            if (session != null && !session.is_me (a) && !in_contacts (a)) {
+                var add = new Button.from_icon_name ("avatar-default-symbolic");
+                add.add_css_class ("circular");
+                add.valign = Align.CENTER;
+                add.tooltip_text = _("Add to Contacts");
+                add.update_property (AccessibleProperty.LABEL, _("Add to Contacts"), -1);
+                add.clicked.connect (() => {
+                    if (add_to_contacts (a)) add.visible = false;
+                });
+                top.append (add);
+            }
             if (session != null && !session.is_me (a)) {
                 session.client.relationship.begin (a.id, (o, res) => {
                     rel = session.client.relationship.end (res);
