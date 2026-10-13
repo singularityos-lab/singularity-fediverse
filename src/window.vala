@@ -451,7 +451,8 @@ namespace Singularity.Apps.Fediverse {
             row.entry_changed.connect (() => {
                 string? inst = Oauth.normalize_instance (row.text);
                 dlg.primary_sensitive = inst != null;
-                hint.label = row.text.strip () == "" ? "" : (inst == null ? _("This is not a server address.") : _("Signs in on %s.").printf (Oauth.host_of (inst) ?? inst));
+                if (row.text.strip () == "") hint.label = "";
+                else hint.label = inst == null ? _("This is not a server address.") : _("Signs in on %s.").printf (Oauth.host_of (inst) ?? inst);
             });
             row.entry_activated.connect (() => {
                 if (Oauth.normalize_instance (row.text) == null) return;
