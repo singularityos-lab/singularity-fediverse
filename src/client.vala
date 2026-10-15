@@ -52,7 +52,7 @@ namespace Singularity.Apps.Fediverse {
             next = null;
             if (token != "") msg.request_headers.replace ("Authorization", "Bearer " + token);
             msg.request_headers.replace ("Accept", "application/json");
-            var bytes = yield session ().send_and_read_async (msg, Priority.DEFAULT, cancel);
+            var bytes = yield Singularity.HttpBody.read (session (), msg, 32 * 1024 * 1024, Priority.DEFAULT, cancel);
             next = Text.next_link (msg.response_headers.get_one ("Link"));
             Json.Node? root = null;
             if (bytes != null && bytes.get_size () > 0) {
@@ -405,7 +405,7 @@ namespace Singularity.Apps.Fediverse {
             try {
                 var msg = new Soup.Message ("GET", url);
                 if (msg != null) {
-                    var bytes = yield Client.session ().send_and_read_async (msg, Priority.LOW, null);
+                    var bytes = yield Singularity.HttpBody.read (Client.session (), msg, 40 * 1024 * 1024, Priority.LOW, null);
                     if (msg.status_code == 200 && bytes.get_size () > 0 && bytes.get_size () < 40 * 1024 * 1024) {
                         DirUtils.create_with_parents (dir (), 0700);
                         string tmp = path + ".part";
