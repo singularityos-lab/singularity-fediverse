@@ -86,6 +86,7 @@ namespace Singularity.Apps.Fediverse {
             view.append_section (null, v3);
             menu.append_submenu (_("View"), view);
             set_menubar (menu);
+            FediverseIntents.install (this);
             var quit = new SimpleAction ("quit", null);
             quit.activate.connect (() => {
                 foreach (var w in get_windows ().copy ()) w.close ();

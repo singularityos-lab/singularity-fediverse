@@ -39,6 +39,7 @@ executable('singularity-fediverse',
     'src/unread.vala',
     'src/window.vala',
     'src/app.vala',
+    'src/agent_intents.vala',
   ),
   dependencies: [gtk_dep, gee_dep, gio_dep, soup_dep, json_dep, secret_dep, posix_dep, math_dep, libsingularity_dep],
   install: true
