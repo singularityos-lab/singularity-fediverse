@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="236" height="236" viewBox="0 0 236 236" fill="none"><defs><linearGradient id="bubble_back" x1="40" y1="34" x2="190" y2="210" gradientUnits="userSpaceOnUse">
+<stop offset="0%" stop-color="#4a3bb0" />
+<stop offset="100%" stop-color="#2a1f78" />
+</linearGradient>
+</defs><path d="M66 42H170C192 42 210 60 210 82V138C210 160 192 178 170 178H106L66 211C61 215 55 211 57 205L66 178C44 178 26 160 26 138V82C26 60 44 42 66 42Z" fill="url(#bubble_back)" />
+</svg>

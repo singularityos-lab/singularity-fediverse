@@ -1,0 +1,315 @@
+{
+ "format": 1,
+ "canvas": [
+  236,
+  236
+ ],
+ "box": [
+  0,
+  0,
+  210,
+  215
+ ],
+ "stack": [
+  {
+   "layer": "layers/000.svg",
+   "piece": "bubble"
+  },
+  {
+   "layer": "layers/001.svg",
+   "piece": "bubble"
+  },
+  {
+   "clip": "M66 34H170C192 34 210 52 210 74V130C210 152 192 170 170 170H106L66 203C61 207 55 203 57 197L66 170C44 170 26 152 26 130V74C26 52 44 34 66 34Z",
+   "stack": [
+    {
+     "layer": "layers/002.svg",
+     "piece": "bubble"
+    },
+    {
+     "rim": "M66 34H170C192 34 210 52 210 74V130C210 152 192 170 170 170H106L66 203C61 207 55 203 57 197L66 170C44 170 26 152 26 130V74C26 52 44 34 66 34Z",
+     "light": [
+      26.0,
+      34.0,
+      210.0,
+      207.0
+     ],
+     "piece": "bubble"
+    }
+   ]
+  },
+  {
+   "shadow": {
+    "dx": 0,
+    "dy": 2,
+    "blur": 2,
+    "color": "#1a0a4c",
+    "opacity": 0.45,
+    "region": [
+     60,
+     44,
+     116,
+     110
+    ]
+   },
+   "stack": [
+    {
+     "layer": "layers/003.svg",
+     "piece": "network"
+    },
+    {
+     "layer": "layers/004.svg",
+     "piece": "network"
+    },
+    {
+     "layer": "layers/005.svg",
+     "piece": "node-0"
+    },
+    {
+     "layer": "layers/006.svg",
+     "piece": "node-1"
+    },
+    {
+     "layer": "layers/007.svg",
+     "piece": "node-2"
+    },
+    {
+     "layer": "layers/008.svg",
+     "piece": "node-3"
+    },
+    {
+     "layer": "layers/009.svg",
+     "piece": "node-4"
+    }
+   ]
+  }
+ ],
+ "motion": [
+  {
+   "piece": "bubble",
+   "origin": [
+    118.0,
+    118.0
+   ],
+   "tracks": [
+    {
+     "kind": "opacity",
+     "from": [
+      1
+     ],
+     "at": 880,
+     "duration": 75,
+     "ease": "linear"
+    }
+   ]
+  },
+  {
+   "piece": "network",
+   "origin": [
+    118.0,
+    99.0
+   ],
+   "tracks": [
+    {
+     "kind": "rotate",
+     "from": [
+      -216
+     ],
+     "at": 0,
+     "duration": 760,
+     "ease": "out"
+    }
+   ]
+  },
+  {
+   "piece": "node-0",
+   "origin": [
+    118.0,
+    99.0
+   ],
+   "tracks": [
+    {
+     "kind": "rotate",
+     "from": [
+      -216
+     ],
+     "at": 0,
+     "duration": 760,
+     "ease": "out"
+    },
+    {
+     "kind": "scale",
+     "from": [
+      0.8,
+      0.8
+     ],
+     "at": 380,
+     "duration": 60,
+     "ease": "out"
+    },
+    {
+     "kind": "scale",
+     "from": [
+      1.2,
+      1.2
+     ],
+     "at": 440,
+     "duration": 120,
+     "ease": "linear"
+    }
+   ]
+  },
+  {
+   "piece": "node-1",
+   "origin": [
+    118.0,
+    99.0
+   ],
+   "tracks": [
+    {
+     "kind": "rotate",
+     "from": [
+      -216
+     ],
+     "at": 0,
+     "duration": 760,
+     "ease": "out"
+    },
+    {
+     "kind": "scale",
+     "from": [
+      0.8,
+      0.8
+     ],
+     "at": 460,
+     "duration": 60,
+     "ease": "out"
+    },
+    {
+     "kind": "scale",
+     "from": [
+      1.2,
+      1.2
+     ],
+     "at": 520,
+     "duration": 120,
+     "ease": "linear"
+    }
+   ]
+  },
+  {
+   "piece": "node-2",
+   "origin": [
+    118.0,
+    99.0
+   ],
+   "tracks": [
+    {
+     "kind": "rotate",
+     "from": [
+      -216
+     ],
+     "at": 0,
+     "duration": 760,
+     "ease": "out"
+    },
+    {
+     "kind": "scale",
+     "from": [
+      0.8,
+      0.8
+     ],
+     "at": 540,
+     "duration": 60,
+     "ease": "out"
+    },
+    {
+     "kind": "scale",
+     "from": [
+      1.2,
+      1.2
+     ],
+     "at": 600,
+     "duration": 120,
+     "ease": "linear"
+    }
+   ]
+  },
+  {
+   "piece": "node-3",
+   "origin": [
+    118.0,
+    99.0
+   ],
+   "tracks": [
+    {
+     "kind": "rotate",
+     "from": [
+      -216
+     ],
+     "at": 0,
+     "duration": 760,
+     "ease": "out"
+    },
+    {
+     "kind": "scale",
+     "from": [
+      0.8,
+      0.8
+     ],
+     "at": 620,
+     "duration": 60,
+     "ease": "out"
+    },
+    {
+     "kind": "scale",
+     "from": [
+      1.2,
+      1.2
+     ],
+     "at": 680,
+     "duration": 120,
+     "ease": "linear"
+    }
+   ]
+  },
+  {
+   "piece": "node-4",
+   "origin": [
+    118.0,
+    99.0
+   ],
+   "tracks": [
+    {
+     "kind": "rotate",
+     "from": [
+      -216
+     ],
+     "at": 0,
+     "duration": 760,
+     "ease": "out"
+    },
+    {
+     "kind": "scale",
+     "from": [
+      0.8,
+      0.8
+     ],
+     "at": 700,
+     "duration": 60,
+     "ease": "out"
+    },
+    {
+     "kind": "scale",
+     "from": [
+      1.2,
+      1.2
+     ],
+     "at": 760,
+     "duration": 120,
+     "ease": "linear"
+    }
+   ]
+  }
+ ]
+}
