@@ -2,7 +2,7 @@ using Gtk;
 
 namespace Singularity.Apps.Fediverse {
 
-    public class FediverseApp : Singularity.Application, Singularity.Migration.Migratable {
+    public class FediverseApp : Singularity.Application, Singularity.Migration.Migratable, Singularity.Startup.Bootable {
         public AccountStore store;
         public DraftStore drafts;
         public UnreadChecker unread;
@@ -175,7 +175,47 @@ namespace Singularity.Apps.Fediverse {
             return w;
         }
 
-        public override void activate () {
+        public Singularity.Startup.Plan build_plan (Singularity.Startup.Request request) {
+            var plan = new Singularity.Startup.Plan ();
+            plan.version = "fediverse-1";
+            if (request.kind == Singularity.Startup.RequestKind.SERVICE) {
+                plan.main ("ready", Singularity.Startup.Category.PREPARE, (c) => {})
+                    .reaches (Singularity.Startup.Milestone.SHELL_READY)
+                    .reaches (Singularity.Startup.Milestone.CONTENT_READY)
+                    .reaches (Singularity.Startup.Milestone.INTERACTIVE);
+                return plan;
+            }
+            var shell = plan.main ("window", Singularity.Startup.Category.SHELL, (c) => {
+                if (request.kind == Singularity.Startup.RequestKind.OPEN) present_window ();
+                else show_window ();
+                c.window = get_active_window ();
+            }).reaches (Singularity.Startup.Milestone.SHELL_READY);
+            if (request.kind == Singularity.Startup.RequestKind.OPEN) {
+                var files = request.files ();
+                plan.main ("open-file", Singularity.Startup.Category.CONTENT, (c) => open_files (files))
+                    .depends_on ("window")
+                    .reaches (Singularity.Startup.Milestone.CONTENT_READY)
+                    .reaches (Singularity.Startup.Milestone.INTERACTIVE);
+            } else {
+                shell.reaches (Singularity.Startup.Milestone.CONTENT_READY).reaches (Singularity.Startup.Milestone.INTERACTIVE);
+            }
+            return plan;
+        }
+
+        public void handle_request (Singularity.Startup.Request request) {
+            if (request.kind == Singularity.Startup.RequestKind.OPEN) {
+                present_window ();
+                open_files (request.files ());
+            } else {
+                show_window ();
+            }
+        }
+
+        private void present_window () {
+            window ().present ();
+        }
+
+        private void show_window () {
             if (pending_action != null) {
                 string action = pending_action;
                 pending_action = null;
@@ -229,9 +269,8 @@ namespace Singularity.Apps.Fediverse {
             return w;
         }
 
-        public override void open (File[] files, string hint) {
+        private void open_files (File[] files) {
             var w = window ();
-            w.present ();
             foreach (var f in files) {
                 string uri = f.get_uri ();
                 if (uri.down ().has_prefix (Oauth.SCHEME + ":")) w.handle_redirect (uri);
