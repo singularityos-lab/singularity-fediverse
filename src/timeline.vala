@@ -23,6 +23,10 @@ namespace Singularity.Apps.Fediverse {
     public abstract class Page : Box {
         public Feed feed;
 
+        public virtual bool settled {
+            get { return true; }
+        }
+
         public virtual void reload () {
         }
 
@@ -286,6 +290,7 @@ namespace Singularity.Apps.Fediverse {
         private string? next;
         private bool loading;
         private bool loaded_once;
+        private bool answered;
         private int serial;
         private int count;
         private Gee.HashSet<string> ids = new Gee.HashSet<string> ();
@@ -497,6 +502,10 @@ namespace Singularity.Apps.Fediverse {
             }
         }
 
+        public override bool settled {
+            get { return answered; }
+        }
+
         public override void reload () {
             if (cancel != null) cancel.cancel ();
             cancel = new Cancellable ();
@@ -508,6 +517,7 @@ namespace Singularity.Apps.Fediverse {
             feed.fetch.begin (session, null, cancel, (o, res) => {
                 if (my != serial) return;
                 loading = false;
+                answered = true;
                 try {
                     string? n;
                     var items = feed.fetch.end (res, out n);

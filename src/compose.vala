@@ -278,11 +278,27 @@ namespace Singularity.Apps.Fediverse {
                 Source.remove (save_id);
                 save_id = 0;
             }
+            sync_draft ();
+            drafts.put (draft, new DateTime.now_utc ().to_unix ());
+        }
+
+        private void sync_draft () {
             draft.text = text.buffer.text;
             draft.spoiler_text = cw_toggle.active ? cw_entry.text : "";
             draft.visibility = visibility;
             draft.sensitive = sensitive_toggle.active;
-            drafts.put (draft, new DateTime.now_utc ().to_unix ());
+        }
+
+        public Variant save_migration () {
+            sync_draft ();
+            return new Variant ("(sx@as@as)", Json.to_string (draft.to_json (), false), scheduled_at != null ? scheduled_at.to_unix () : 0,
+                new Variant.strv (migration_files ()), new Variant.strv (carry_media.to_array ()));
+        }
+
+        public string[] migration_files () {
+            string[] files = {};
+            foreach (var u in uploads) files += Singularity.Migration.portable_path (u.file);
+            return files;
         }
 
         private void forget_draft () {

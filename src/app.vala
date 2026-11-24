@@ -2,7 +2,7 @@ using Gtk;
 
 namespace Singularity.Apps.Fediverse {
 
-    public class FediverseApp : Singularity.Application {
+    public class FediverseApp : Singularity.Application, Singularity.Migration.Migratable {
         public AccountStore store;
         public DraftStore drafts;
         public UnreadChecker unread;
@@ -187,6 +187,46 @@ namespace Singularity.Apps.Fediverse {
                 checked_once = true;
                 unread.check.begin ();
             }
+        }
+
+        public Variant save_model () {
+            return new VariantDict ().end ();
+        }
+
+        public async void restore_model (Variant model) throws Error {
+        }
+
+        public string window_kind (Gtk.Window w) {
+            if (w is FediverseWindow) return "fediverse";
+            if (w is ComposeDialog) return "compose";
+            return "";
+        }
+
+        public Variant save_window (Gtk.Window w) {
+            if (w is ComposeDialog) return ((ComposeDialog) w).save_migration ();
+            return ((FediverseWindow) w).save_migration ();
+        }
+
+        public string[] files () {
+            string[] all = {};
+            foreach (var w in get_windows ()) {
+                var dlg = w as ComposeDialog;
+                if (dlg == null) continue;
+                foreach (var f in dlg.migration_files ()) all += f;
+            }
+            return all;
+        }
+
+        public async Gtk.Window? rebuild_window (string kind, Variant data) throws Error {
+            if (kind == "compose") return yield window ().resume_compose (data);
+            if (kind != "fediverse") return null;
+            FediverseWindow? w = null;
+            foreach (var win in get_windows ()) {
+                if (win is FediverseWindow) w = (FediverseWindow) win;
+            }
+            if (w == null) w = new FediverseWindow (this);
+            yield w.restore_migration (data);
+            return w;
         }
 
         public override void open (File[] files, string hint) {

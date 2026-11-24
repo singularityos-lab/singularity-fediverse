@@ -701,8 +701,8 @@ namespace Singularity.Apps.Fediverse {
             push (new TimelineView (new Feed (FeedKind.SEARCH, q), this, _session));
         }
 
-        private void compose (Status? reply_to, Draft? draft = null, DateTime? schedule = null, Gee.List<string>? media = null) {
-            if (_session == null) return;
+        private ComposeDialog? compose (Status? reply_to, Draft? draft = null, DateTime? schedule = null, Gee.List<string>? media = null) {
+            if (_session == null) return null;
             var sess = reply_to != null ? session_for (reply_to) : (draft != null ? session_by_key (draft.account) : _session);
             if (sess == null) sess = _session;
             var dlg = new ComposeDialog (app, sess, reply_to, app.drafts, draft, schedule);
@@ -730,6 +730,7 @@ namespace Singularity.Apps.Fediverse {
                 foreach (var v in history) if (v.feed.kind == FeedKind.SCHEDULED) v.reload ();
             });
             dlg.present ();
+            return dlg;
         }
 
         private Session? session_by_key (string key) {
@@ -886,14 +887,116 @@ namespace Singularity.Apps.Fediverse {
             }
         }
 
-        public async void open_status_id (string account_key, string id) {
+        private async void wait_session () {
             for (int i = 0; i < 50 && _session == null; i++) {
                 Timeout.add (200, () => {
-                    open_status_id.callback ();
+                    wait_session.callback ();
                     return Source.REMOVE;
                 });
                 yield;
             }
+        }
+
+        public Variant save_migration () {
+            var d = new VariantDict ();
+            d.insert_value ("account", new Variant.string (store.current));
+            var pages = new VariantBuilder (new VariantType ("a(issss)"));
+            foreach (var v in history) {
+                var f = v.feed;
+                string via = f.focus != null ? f.focus.via : (f.account != null ? f.account.via : "");
+                pages.add ("(issss)", (int) f.kind, f.arg, f.account != null ? f.account.id : "", f.focus != null ? f.focus.id : "", via);
+            }
+            d.insert_value ("pages", pages.end ());
+            return d.end ();
+        }
+
+        public async void restore_migration (Variant data) {
+            var d = new VariantDict (data);
+            string key;
+            if (!d.lookup ("account", "s", out key) || key == "" || store.find (key) == null) return;
+            if (store.current != key) {
+                store.current = key;
+                show_start ();
+            }
+            yield wait_session ();
+            var pages = d.lookup_value ("pages", new VariantType ("a(issss)"));
+            if (_session == null || pages == null) return;
+            int kind;
+            string arg, account_id, status_id, via;
+            bool root = true;
+            var it = pages.iterator ();
+            while (it.next ("(issss)", out kind, out arg, out account_id, out status_id, out via)) {
+                var k = (FeedKind) kind;
+                if (root) {
+                    root = false;
+                    bool home = history.size == 1 && history[0].feed.kind == FeedKind.HOME;
+                    if (k != FeedKind.HOME || !home) show_root (new Feed (k, arg));
+                    continue;
+                }
+                switch (k) {
+                    case FeedKind.SEARCH: push (new TimelineView (new Feed (FeedKind.SEARCH, arg), this, _session)); break;
+                    case FeedKind.HASHTAG: open_tag (arg); break;
+                    case FeedKind.THREAD: yield open_thread (via, status_id); break;
+                    case FeedKind.PROFILE: yield open_account_id (via, account_id); break;
+                    default: break;
+                }
+            }
+            yield pages_settled ();
+        }
+
+        private async void pages_settled () {
+            int64 deadline = get_monotonic_time () + 10000000;
+            while (get_monotonic_time () < deadline) {
+                bool done = true;
+                foreach (var page in history) done &= page.settled;
+                if (done) return;
+                Timeout.add (50, pages_settled.callback);
+                yield;
+            }
+        }
+
+        public async ComposeDialog? resume_compose (Variant data) throws Error {
+            string json;
+            int64 at;
+            Variant uris, media;
+            data.get ("(sx@as@as)", out json, out at, out uris, out media);
+            var draft = Draft.from_json (Json.from_string (json).get_object ());
+            if (draft == null) return null;
+            yield wait_session ();
+            var files = new Gee.ArrayList<string> ();
+            foreach (unowned string path in uris.get_strv ()) files.add (Singularity.Migration.local_file (path).get_uri ());
+            var carried = new Gee.ArrayList<string> ();
+            foreach (unowned string id in media.get_strv ()) carried.add (id);
+            var dlg = compose (null, draft, at > 0 ? new DateTime.from_unix_utc (at) : null, carried);
+            if (dlg != null && files.size > 0) dlg.add_shared (files.to_array (), "");
+            return dlg;
+        }
+
+        private async void open_thread (string via, string id) {
+            if (via != "") {
+                yield open_status_id (via, id);
+                return;
+            }
+            try {
+                open_status (yield _session.client.status (id));
+            } catch (Error e) {
+                show_error (_("The post could not be opened: %s").printf (e.message));
+            }
+        }
+
+        private async void open_account_id (string via, string id) {
+            var sess = (via != "" ? session_by_key (via) : null) ?? _session;
+            try {
+                var a = yield sess.client.account (id);
+                a.via = via;
+                open_account (a);
+            } catch (Error e) {
+                show_error (_("The profile could not be opened: %s").printf (e.message));
+            }
+        }
+
+        public async void open_status_id (string account_key, string id) {
+            yield wait_session ();
             if (_session == null) return;
             Session? sess = session_by_key (account_key);
             if (sess == null) {
