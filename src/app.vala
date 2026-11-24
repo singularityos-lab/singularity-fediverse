@@ -8,6 +8,7 @@ namespace Singularity.Apps.Fediverse {
         public UnreadChecker unread;
         private string? pending_action;
         private bool checked_once;
+        private Gee.ArrayList<FediverseWindow> restored = new Gee.ArrayList<FediverseWindow> ();
 
         public FediverseApp () {
             Object (application_id: "dev.sinty.fediverse", flags: ApplicationFlags.HANDLES_OPEN);
@@ -234,6 +235,7 @@ namespace Singularity.Apps.Fediverse {
         }
 
         public async void restore_model (Variant model) throws Error {
+            restored.clear ();
         }
 
         public string window_kind (Gtk.Window w) {
@@ -258,15 +260,39 @@ namespace Singularity.Apps.Fediverse {
         }
 
         public async Gtk.Window? rebuild_window (string kind, Variant data) throws Error {
-            if (kind == "compose") return yield window ().resume_compose (data);
+            if (kind == "compose") return yield compose_host (data).resume_compose (data);
             if (kind != "fediverse") return null;
             FediverseWindow? w = null;
             foreach (var win in get_windows ()) {
-                if (win is FediverseWindow) w = (FediverseWindow) win;
+                var f = win as FediverseWindow;
+                if (f != null && !restored.contains (f)) {
+                    w = f;
+                    break;
+                }
             }
             if (w == null) w = new FediverseWindow (this);
+            restored.add (w);
             yield w.restore_migration (data);
             return w;
+        }
+
+        private FediverseWindow compose_host (Variant data) {
+            if (restored.is_empty) return window ();
+            string json;
+            int64 at;
+            Variant uris, media;
+            data.get ("(sx@as@as)", out json, out at, out uris, out media);
+            string account = "";
+            try {
+                var draft = Draft.from_json (Json.from_string (json).get_object ());
+                if (draft != null) account = draft.account;
+            } catch (Error e) {
+            }
+            for (int i = restored.size - 1; i >= 0; i--) {
+                var s = restored[i].session;
+                if (account != "" && s != null && s.saved.key () == account) return restored[i];
+            }
+            return restored.last ();
         }
 
         private void open_files (File[] files) {

@@ -81,6 +81,98 @@ namespace Singularity.Apps.Fediverse {
             });
         }
 
+        public override SizeRequestMode get_request_mode () {
+            return SizeRequestMode.HEIGHT_FOR_WIDTH;
+        }
+
+        public override void measure (Orientation orientation, int for_size, out int minimum, out int natural, out int minimum_baseline, out int natural_baseline) {
+            base.measure (orientation, for_size, out minimum, out natural, out minimum_baseline, out natural_baseline);
+            minimum_baseline = natural_baseline = -1;
+            if (orientation != Orientation.VERTICAL) return;
+            minimum = natural = height_for (for_size);
+        }
+
+        private int measured_width = -1;
+        private string measured_font = "";
+        private int measured_height;
+
+        private int height_for (int width) {
+            string font = get_pango_context ().get_font_description ().to_string ();
+            if (width == measured_width && font == measured_font) return measured_height;
+            int wrap = width < 0 ? -1 : int.max (1, width - left_margin - right_margin);
+            int total = top_margin + bottom_margin;
+            TextIter line;
+            buffer.get_start_iter (out line);
+            do {
+                total += paragraph_height (line, wrap);
+            } while (line.forward_line ());
+            measured_width = width;
+            measured_font = font;
+            measured_height = total;
+            return total;
+        }
+
+        private int paragraph_height (TextIter start, int width) {
+            var end = start;
+            if (!end.ends_line ()) end.forward_to_line_end ();
+            var text = new StringBuilder ();
+            var attrs = new Pango.AttrList ();
+            int indent = 0;
+            var at = start;
+            while (at.compare (end) < 0) {
+                var next = at;
+                if (!next.forward_to_tag_toggle (null) || next.compare (end) > 0) next = end;
+                uint from = (uint) text.len;
+                var walk = at;
+                while (walk.compare (next) < 0) {
+                    var paintable = walk.get_paintable ();
+                    if (paintable != null) {
+                        uint pos = (uint) text.len;
+                        text.append_unichar (0xFFFC);
+                        var box = Pango.Rectangle () {
+                            x = 0,
+                            y = -paintable.get_intrinsic_height () * Pango.SCALE,
+                            width = paintable.get_intrinsic_width () * Pango.SCALE,
+                            height = paintable.get_intrinsic_height () * Pango.SCALE
+                        };
+                        var shape = Pango.AttrShape.@new (box, box);
+                        shape.start_index = pos;
+                        shape.end_index = (uint) text.len;
+                        attrs.insert ((owned) shape);
+                    } else {
+                        text.append_unichar (walk.get_char ());
+                    }
+                    walk.forward_char ();
+                }
+                uint to = (uint) text.len;
+                foreach (var tag in at.get_tags ()) {
+                    Pango.Attribute? a = null;
+                    switch (tag.name) {
+                        case "bold": a = Pango.attr_weight_new (Pango.Weight.BOLD); break;
+                        case "italic": a = Pango.attr_style_new (Pango.Style.ITALIC); break;
+                        case "code": a = Pango.attr_family_new ("monospace"); break;
+                        case "quote":
+                            a = Pango.attr_style_new (Pango.Style.ITALIC);
+                            indent = int.max (indent, tag.left_margin);
+                            break;
+                        default: break;
+                    }
+                    if (a == null) continue;
+                    a.start_index = from;
+                    a.end_index = to;
+                    attrs.insert ((owned) a);
+                }
+                at = next;
+            }
+            var layout = create_pango_layout (text.str);
+            layout.set_attributes (attrs);
+            layout.set_wrap (Pango.WrapMode.WORD_CHAR);
+            layout.set_width (width < 0 ? -1 : int.max (1, width - indent) * Pango.SCALE);
+            int w, h;
+            layout.get_pixel_size (out w, out h);
+            return h + pixels_above_lines + pixels_below_lines + pixels_inside_wrap * (layout.get_line_count () - 1);
+        }
+
         public override void dispose () {
             if (accent_handler != 0) {
                 Singularity.Style.StyleManager.get_default ().disconnect (accent_handler);
